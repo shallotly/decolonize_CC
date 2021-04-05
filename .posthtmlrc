@@ -7,12 +7,30 @@
       "root": "./src/partials",
       "locals": {
         "top": [],
-        "body": [],
+        "body": [
+          {
+            "type": "text",
+            "value": "Leadin. Something to draw the reader in. Graphics is the only visuals and words desk at the Spectator."
+          },
+          {
+            "type": "text",
+            "value": "Nutgraf. What is the meat of the story? Why does this matter?"
+          },
+          {
+            "type": "graphic",
+            "value": {
+              "asset": "chord-chart.html"
+            }
+          }
+        ],
+        "headline": "Decolonize CC",
+        "date": "Apr 4th, 2021",
+        "byline": "By <a href=\"https://github.com/shallotly\">Charlotte Li</a>",
         "USE_NEWS_NAV": true,
         "USE_EYE_NAV": false,
         "USE_COVER_HED": false,
         "IS_EMBED": false,
-        "DOC_URL": null
+        "DOC_URL": "https://docs.google.com/document/d/1OyzyU4YZ9p26hnLarrTP2wY47DE0PpFJCoYLTHuzuW4/edit"
       }
     }
   }

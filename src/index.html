@@ -17,20 +17,11 @@
   </head>
 
   <body>
-    <include src="partials/navbar.html"></include>
-
     <div class="story-top">
       <each loop="item in top">
         <switch expression="item.type">
           <case n="'image'">
             <include src="partials/image.html"></include>
-          </case>
-          <case n="'graphic'">
-            <div class="graphic">
-              <if condition="item.value.asset === 'graphic-name.html'">
-                <include src="graphic-name.html"></include>
-              </if>
-            </div>
           </case>
         </switch>
       </each>
@@ -57,8 +48,8 @@
           </case>
           <case n="'graphic'">
             <div class="graphic">
-              <if condition="item.value.asset === 'graphic-name.html'">
-                <include src="graphic-name.html"></include>
+              <if condition="item.value.asset === 'chord-chart.html'">
+                <include src="chord-chart.html"></include>
               </if>
             </div>
           </case>
