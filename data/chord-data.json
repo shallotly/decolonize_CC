@@ -20,6 +20,11 @@
         "value": 2
     },
     {
+        "source": "Augustine",
+        "target": "Descartes",
+        "value": 1
+    },
+    {
         "source": "Descartes",
         "target": "Aristotle",
         "value": 1
