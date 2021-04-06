@@ -58,6 +58,7 @@ function drawChords() {
     tgrp.attr('transform', (d, i) => `translate(${xpos},${ypos})`);
     tgrp
       .select('rect')
+      .attr('opacity',1)
       .attr('x', -110)
       .attr('y', -15)
       .attr('height', '20px')
@@ -67,6 +68,7 @@ function drawChords() {
       .attr('stroke-width', 0.5);
     tgrp
       .select('text')
+      .attr('opacity',1)
       .attr('x', 0)
       .attr('y', -2.5)
       .attr('text-anchor', 'start')
@@ -84,7 +86,8 @@ function drawChords() {
 chordPaths.on('mouseout',function (event, d) {
     d3.select(this).attr('fill', d => color(names[d.target.index]));
     chordPaths.attr('fill', d => color(names[d.target.index]));
-
+    tgrp.select('rect').attr('opacity',0);
+    tgrp.select('text').attr('opacity',0);
 });
 
   svg
