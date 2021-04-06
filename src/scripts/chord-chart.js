@@ -24,7 +24,7 @@ const chord = d3
 const svg = d3
   .select('.chord-chart')
   .append('svg')
-  .attr("viewBox", [-width / 2, -height / 2, width, height])
+  .attr('viewBox', [-width / 2, -height / 2, width, height])
   .attr('height', height)
   .attr('width', width);
 
@@ -45,9 +45,47 @@ function drawChords() {
     .selectAll('g')
     .data(chords)
     .join('path')
+    .classed('chord', true)
     .attr('d', ribbon)
     .attr('fill', d => color(names[d.target.index]))
     .style('mix-blend-mode', 'multiply');
+
+  const chordPaths = d3.selectAll('.chord');
+  chordPaths.on('mouseover', function (event, d) {
+    const [xpos, ypos] = alert_coords(event);
+    chordPaths.attr('fill', '#333');
+    d3.select(this).attr('fill', d => color(names[d.target.index]));
+    tgrp.attr('transform', (d, i) => `translate(${xpos},${ypos})`);
+    tgrp
+      .select('rect')
+      .attr('x', -110)
+      .attr('y', -15)
+      .attr('height', '20px')
+      .attr('width', '220px')
+      .attr('fill', 'white')
+      .attr('stroke', 'gray')
+      .attr('stroke-width', 0.5);
+    tgrp
+      .select('text')
+      .attr('x', 0)
+      .attr('y', -2.5)
+      .attr('text-anchor', 'start')
+      .attr('font-family', 'sans-serif')
+      .attr('font-size', '11px')
+      .attr('font-weight', 'bold')
+      .attr('fill', 'black')
+      .text(
+        `${names[d.source.index]} cites ${names[d.target.index]} ${
+          d.source.value
+        } times`,
+      );
+  });
+
+chordPaths.on('mouseout',function (event, d) {
+    d3.select(this).attr('fill', d => color(names[d.target.index]));
+    chordPaths.attr('fill', d => color(names[d.target.index]));
+
+});
 
   svg
     .append('g')
@@ -68,9 +106,28 @@ function drawChords() {
         .append('text')
         .attr('dy', -3)
         .append('textPath')
-        .attr('xlink:href', '#'+textId)
-        .attr('startOffset', d => (d.startAngle + d.endAngle) / 2 * outerRadius)
+        .attr('xlink:href', '#' + textId)
+        .attr(
+          'startOffset',
+          d => ((d.startAngle + d.endAngle) / 2) * outerRadius,
+        )
         .text(d => names[d.index]),
     );
+
+    const tgrp = svg.append('g').attr('id', 'tooltip');
+    tgrp.append('rect');
+    tgrp.append('text');
+  
 }
 drawChords();
+
+var pt = svg.node().createSVGPoint(); // Created once for document
+
+function alert_coords(evt) {
+  pt.x = evt.clientX;
+  pt.y = evt.clientY;
+
+  // The cursor point, translated into svg coordinates
+  var cursorpt = pt.matrixTransform(svg.node().getScreenCTM().inverse());
+  return [cursorpt.x, cursorpt.y];
+}
