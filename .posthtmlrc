@@ -21,6 +21,12 @@
             "value": {
               "asset": "chord-chart.html"
             }
+          },
+          {
+            "type": "graphic",
+            "value": {
+              "asset": "word-tree.html"
+            }
           }
         ],
         "headline": "Decolonize CC",
