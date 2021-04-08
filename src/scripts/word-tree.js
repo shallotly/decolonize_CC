@@ -3,7 +3,7 @@ import corpus from '../../data/corpus.json';
 import * as d3 from 'd3';
 
 /*-------------------Data Processing---------------------*/
-const searchWord = 'savage';
+const searchWord = 'india';
 
 const tokenized = [];
 for (let i = 0; i < corpus.length; i++) {
@@ -44,8 +44,6 @@ for (let i = 0; i < tokenized.length; i++) {
   }
 }
 
-console.log(head);
-
 function createNode(word) {
   return {
     token: word,
@@ -56,39 +54,42 @@ function createNode(word) {
 let test = {};
 test = Object.assign(test, head);
 
-function traverseTree(node){
-  if(node.children.length>1){
-    for(let i = 0; i<node.children.length; i++){
-      traverseTree(node.children[i])
+function traverseTree(node) {
+  if (node.children.length > 1) {
+    for (let i = 0; i < node.children.length; i++) {
+      traverseTree(node.children[i]);
     }
-  } else if (node.children.length == 1){
-    compressChild(node)
-    traverseTree(node)
+  } else if (node.children.length == 1) {
+    compressChild(node);
+    traverseTree(node);
   } else {
-    return null
+    return null;
   }
 }
 
-function compressChild(node){
+function compressChild(node) {
   //if (node.children.length == 0){
   //  node.children = undefined
   //} else if(node.children.length<2 ){
-    let child = node.children.pop()
-    node.token = node.token + " " + child.token
-    node.children = child.children
+  let child = node.children.pop();
+  node.token = node.token + ' ' + child.token;
+  node.children = child.children;
   //}
 }
 
-traverseTree(head)
-console.log(head)
+traverseTree(head);
+console.log(head);
 
 /*-------------------Word Tree---------------------*/
-const margin = { top: 10, right: 120, bottom: 10, left: 40 };
+const margin = { top: 10, right: 120, bottom: 10, left: 160 };
 const width = 1200;
 const height = 720;
 const dx = 10;
 const dy = width / 10;
-const tree = d3.tree().nodeSize([dx, dy]);
+const tree = d3.tree().size([width, height-200]);
+
+const textWidths = {}; // Mapping from numChild to width of <text> element
+
 const diagonal = d3
   .linkHorizontal()
   .x(d => d.y)
@@ -96,6 +97,7 @@ const diagonal = d3
 const root = d3.hierarchy(head);
 const maxFont = 54;
 
+root.sort((a, b) => b.data.children.length - a.data.children.length);
 root.x0 = dy / 2;
 root.y0 = 0;
 root.descendants().forEach((d, i) => {
@@ -141,7 +143,7 @@ function update(source) {
   });
 
   const height = right.x - left.x + margin.top + margin.bottom;
-
+  console.log([-margin.left, left.x - margin.top, width, height])
   const transition = svg
     .transition()
     .duration(duration)
@@ -164,7 +166,7 @@ function update(source) {
     .on('click', (event, d) => {
       const ancestors = d.ancestors();
       for (let i = 1; i < ancestors.length; i++) {
-        ancestors[i].children = [ ancestors[i-1] ];
+        ancestors[i].children = [ancestors[i - 1]];
       }
       d.children = d._children;
       update(d);
@@ -181,18 +183,21 @@ function update(source) {
     .attr('dy', '0.31em')
     .attr('x', d => (d._children ? -6 : 6))
     .attr('text-anchor', d => (d.parent ? 'start' : 'end'))
-    .attr('font-size',d => {
-      let numChild = d.data.children.length
-      if (numChild > 15){
-        return numChild+"px"
-      } else if (numChild <= 1){
-        return "14px"
+    .attr('font-size', d => {
+      let numChild = d.data.children.length;
+      if (numChild > 15) {
+        return numChild + 'px';
+      } else if (numChild <= 1) {
+        return '14px';
       } else {
-        let size = 20 + 2*numChild
-        return size +"px"
+        let size = 20 + 2 * numChild;
+        return size + 'px';
       }
     })
     .text(d => d.data.token)
+    .each(function (d, i) {
+      textWidths[d.data.token] = this.getBoundingClientRect().width;
+    })
     .clone(true)
     .lower()
     .attr('stroke-linejoin', 'round')
@@ -217,19 +222,33 @@ function update(source) {
     .attr('stroke-opacity', 0);
 
   // Update the links…
-  const link = gLink.selectAll('path').data(links, d => (d.target.id));
+  const link = gLink.selectAll('path').data(links, d => d.target.id);
 
   // Enter any new links at the parent's previous position.
   const linkEnter = link
     .enter()
     .append('path')
-    .attr('d', d => {
-      const o = { x: source.x0, y: source.y0 };
+    .attr('d', (d, i) => {
+      const o = {
+        x: source.x0,
+        y: source.y0,
+      };
       return diagonal({ source: o, target: o });
     });
 
   // Transition links to their new position.
-  link.merge(linkEnter).transition(transition).attr('d', diagonal);
+  link
+    .merge(linkEnter)
+    .transition(transition)
+    .attr('d', d => {
+      return diagonal({
+        source: {
+          y: d.source.y + (d.source.parent ? textWidths[d.source.data.token] : 0),
+          x: d.source.x,
+        },
+        target: d.target,
+      });
+    });
 
   // Transition exiting nodes to the parent's new position.
   link
