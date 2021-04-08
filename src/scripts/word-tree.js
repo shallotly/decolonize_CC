@@ -44,7 +44,6 @@ for (let i = 0; i < tokenized.length; i++) {
   }
 }
 
-const ptr = head
 console.log(head);
 
 function createNode(word) {
@@ -54,11 +53,40 @@ function createNode(word) {
   };
 }
 
+let test = {};
+test = Object.assign(test, head);
+
+function traverseTree(node){
+  if(node.children.length>1){
+    for(let i = 0; i<node.children.length; i++){
+      traverseTree(node.children[i])
+    }
+  } else if (node.children.length == 1){
+    compressChild(node)
+    traverseTree(node)
+  } else {
+    return null
+  }
+}
+
+function compressChild(node){
+  //if (node.children.length == 0){
+  //  node.children = undefined
+  //} else if(node.children.length<2 ){
+    let child = node.children.pop()
+    node.token = node.token + " " + child.token
+    node.children = child.children
+  //}
+}
+
+traverseTree(head)
+console.log(head)
+
 /*-------------------Word Tree---------------------*/
 const margin = { top: 10, right: 120, bottom: 10, left: 40 };
 const width = 1200;
 const height = 720;
-const dx = 5;
+const dx = 10;
 const dy = width / 10;
 const tree = d3.tree().nodeSize([dx, dy]);
 const diagonal = d3
@@ -189,14 +217,13 @@ function update(source) {
     .attr('stroke-opacity', 0);
 
   // Update the links…
-  const link = gLink.selectAll('path').data(links, d => d.target.id);
+  const link = gLink.selectAll('path').data(links, d => (d.target.id));
 
   // Enter any new links at the parent's previous position.
   const linkEnter = link
     .enter()
     .append('path')
     .attr('d', d => {
-      console.log(d)
       const o = { x: source.x0, y: source.y0 };
       return diagonal({ source: o, target: o });
     });
