@@ -44,6 +44,7 @@ for (let i = 0; i < tokenized.length; i++) {
   }
 }
 
+const ptr = head
 console.log(head);
 
 function createNode(word) {
@@ -57,21 +58,23 @@ function createNode(word) {
 const margin = { top: 10, right: 120, bottom: 10, left: 40 };
 const width = 1200;
 const height = 720;
-const dx = 10;
-const dy = width / 6;
+const dx = 5;
+const dy = width / 10;
 const tree = d3.tree().nodeSize([dx, dy]);
 const diagonal = d3
   .linkHorizontal()
   .x(d => d.y)
   .y(d => d.x);
 const root = d3.hierarchy(head);
+const maxFont = 54;
 
 root.x0 = dy / 2;
 root.y0 = 0;
 root.descendants().forEach((d, i) => {
+  //console.log(d)
   d.id = i;
   d._children = d.children;
-  if (d.depth && d.data.token.length !== 7) d.children = null;
+  if (!d.height) d.children = null; //&& d.data.token.length !== 7
 });
 
 const svg = d3
@@ -139,17 +142,28 @@ function update(source) {
       update(d);
     });
 
-  nodeEnter
-    .append('circle')
-    .attr('r', 2.5)
-    .attr('fill', d => (d._children ? '#555' : '#999'))
-    .attr('stroke-width', 10);
+  // nodeEnter
+  //   .append('circle')
+  //   .attr('r', 2.5)
+  //   .attr('fill', d => (d._children ? '#555' : '#999'))
+  //   .attr('stroke-width', 10);
 
   nodeEnter
     .append('text')
     .attr('dy', '0.31em')
     .attr('x', d => (d._children ? -6 : 6))
-    .attr('text-anchor', d => (d._children ? 'end' : 'start'))
+    .attr('text-anchor', d => (d.parent ? 'start' : 'end'))
+    .attr('font-size',d => {
+      let numChild = d.data.children.length
+      if (numChild > 15){
+        return numChild+"px"
+      } else if (numChild <= 1){
+        return "14px"
+      } else {
+        let size = 20 + 2*numChild
+        return size +"px"
+      }
+    })
     .text(d => d.data.token)
     .clone(true)
     .lower()
@@ -182,6 +196,7 @@ function update(source) {
     .enter()
     .append('path')
     .attr('d', d => {
+      console.log(d)
       const o = { x: source.x0, y: source.y0 };
       return diagonal({ source: o, target: o });
     });
