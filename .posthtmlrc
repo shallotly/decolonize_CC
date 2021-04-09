@@ -6,15 +6,25 @@
     "posthtml-expressions": {
       "root": "./src/partials",
       "locals": {
-        "top": [],
+        "top": [
+          {
+            "type": "image",
+            "value": {
+              "width": "600",
+              "asset": "./books.png",
+              "caption": "",
+              "credit": ""
+            }
+          }
+        ],
         "body": [
           {
             "type": "text",
-            "value": "Leadin. Something to draw the reader in. Graphics is the only visuals and words desk at the Spectator."
+            "value": "In this project, I explored the CC curriculum through computing and visualizing a collection of text by 15 authors (Plato, Aristotle, Augustine, Descartes, Hobbes, Locke, Rousseau, Kant, Smith, Burke, Wollstonecraft, Tocqueville, Mill, Marx, and Darwin), plus the Bible."
           },
           {
-            "type": "text",
-            "value": "Nutgraf. What is the meat of the story? Why does this matter?"
+            "type": "subhed",
+            "value": ""
           },
           {
             "type": "graphic",
@@ -25,18 +35,12 @@
           {
             "type": "graphic",
             "value": {
-              "asset": "arc.html"
-            }
-          },
-          {
-            "type": "graphic",
-            "value": {
               "asset": "word-tree.html"
             }
           }
         ],
-        "headline": "Decolonize CC",
-        "date": "Apr 4th, 2021",
+        "headline": "Decolonizing CC: The Canon From a Computational Perspective",
+        "date": "Apr 9th, 2021",
         "byline": "By <a href=\"https://github.com/shallotly\">Charlotte Li</a>",
         "USE_NEWS_NAV": true,
         "USE_EYE_NAV": false,

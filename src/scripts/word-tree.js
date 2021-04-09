@@ -5,6 +5,7 @@ import * as d3 from 'd3';
 /*-------------------Data Processing---------------------*/
 let head;
 let root;
+const color = d3.scaleOrdinal(corpus.map(d=>d.author), d3.schemeCategory10);
 
 export function updateData(selection, searchWord) {
   const tokenized = [];
@@ -24,7 +25,7 @@ export function updateData(selection, searchWord) {
   }
 
   let prefix = new Map();
-  head = createNode(searchWord);
+  head = createNode(searchWord,null);
   prefix.set(searchWord, head);
   let parent = head;
 
@@ -40,7 +41,7 @@ export function updateData(selection, searchWord) {
           if (prefix.has(s)) {
             parent = prefix.get(s);
           } else {
-            let node = createNode(tokenized[i][j + k - 1]);
+            let node = createNode(tokenized[i][j + k - 1],corpus[i].author);
             prefix.set(s, node);
             parent.children.push(node);
             parent = node;
@@ -51,9 +52,7 @@ export function updateData(selection, searchWord) {
   }
 
   traverseTree(head);
-
   console.log(head)
-
   root = d3
     .hierarchy(head)
     .sort((a, b) => b.data.children.length - a.data.children.length);
@@ -66,13 +65,14 @@ export function updateData(selection, searchWord) {
     d._children = d.children;
     if (!d.height) d.children = null; //&& d.data.token.length !== 7
   });
-  console.log(root)
+
   update(root);
 }
 
-function createNode(word) {
+function createNode(word,author) {
   return {
     token: word,
+    author: author,
     children: [],
   };
 }
@@ -158,7 +158,7 @@ function update(source) {
   const nodeEnter = node
     .enter()
     .append('g')
-    // .attr('transform', d => `translate(${source.y0},${(source.x0 + source.x1) / 2})`)
+    .attr('transform', d => `translate(${source.y0},${(source.x0 + source.x1) / 2})`)
     .attr('fill-opacity', 0)
     .attr('stroke-opacity', 0)
     .on('click', (event, d) => {
@@ -175,17 +175,17 @@ function update(source) {
     .attr('dy', '0.31em')
     .attr('x', d => (d._children ? -6 : 6))
     .attr('text-anchor', d => (d.parent ? 'start' : 'end'))
-    .attr('font-size', d => {
+    .attr('font-size', d => { 
       const max = 30;
       const min = (nodes.length>125) ? 7 : 15;
       let numChild = d.data.children.length;
-      let font = numChild//Math.sqrt(numChild)
-      if ((font + min) > max) {
+      if ((numChild + min) > max) {
         return max + 'px';
-      } else if (font < min) {
+      } else if (numChild < 2) {
         return min + 'px';
-      } else return (font+min) + 'px';
+      } else return (numChild+min) + 'px';
     })
+    .attr('fill', d =>(d.children ? 'black': color(d.data.author)))
     .text(d => d.data.token)
     .each(function (d, i) {
       textWidths[d.data.token] = this.getBoundingClientRect().width;
@@ -206,14 +206,13 @@ function update(source) {
     .selectAll('text')
     .attr('font-size', d => {
       const max = 30;
-      const min = (nodes.length>125) ? 7 : 12
+      const min = (nodes.length>125) ? 7 : 15;
       let numChild = d.data.children.length;
-      let font = numChild//Math.sqrt(numChild)
-      if ((font + min) > max) {
+      if ((numChild + min) > max) {
         return max + 'px';
-      } else if (font < min) {
+      } else if (numChild < 2) {
         return min + 'px';
-      } else return (font+min) + 'px';
+      } else return (numChild+min) + 'px';
     });
 
   // Transition exiting nodes to the parent's new position.

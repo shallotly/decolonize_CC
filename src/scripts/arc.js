@@ -49,8 +49,8 @@ const y = d3.scalePoint(
 
 const label = svg
   .append('g')
-  .attr('font-family', 'sans-serif')
-  .attr('font-size', 10)
+  //.attr('font-family', 'sans-serif')
+  .attr('font-size', 12)
   .attr('text-anchor', 'end')
   .selectAll('g')
   .data(graph.nodes)
