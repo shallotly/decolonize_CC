@@ -63,11 +63,10 @@ function traverseTree(node) {
     compressChild(node);
     traverseTree(node);
   } else {
-    node.value = 1
+    node.value = 1;
     return null;
   }
 }
-
 
 function compressChild(node) {
   //if (node.children.length == 0){
@@ -84,12 +83,10 @@ console.log(head);
 
 /*-------------------Word Tree---------------------*/
 const margin = { top: 10, right: 120, bottom: 10, left: 160 };
-const width = 1200;
-const height = 1200;
-const dx = 10;
-const dy = width / 10;
-const tree = d3.tree().size([width, height - 400]);
-const partition = d3.partition().size([width, height - 400])
+const width = 1000;
+const height = 800;
+
+const partition = d3.partition().size([800-margin.top-margin.bottom, 800]);
 
 const textWidths = {}; // Mapping from numChild to width of <text> element
 
@@ -97,12 +94,15 @@ const diagonal = d3
   .linkHorizontal()
   .x(d => d.y)
   .y(d => d.x);
-const root = d3.hierarchy(head);
+const root = d3
+  .hierarchy(head)
+  .sort((a, b) => b.data.children.length - a.data.children.length);
 const maxFont = 54;
 
-root.sort((a, b) => b.data.children.length - a.data.children.length);
-root.x0 = dy / 2;
-root.y0 = 0;
+root._x0 = 0;
+root._x1 = width; // or is it height?
+root._y0 = 0;
+root._y1 = 133.33;
 root.descendants().forEach((d, i) => {
   //console.log(d)
   d.id = i;
@@ -123,14 +123,14 @@ const gLink = svg
   .attr('stroke', '#555')
   .attr('stroke-opacity', 0.4)
   .attr('stroke-width', 1.5)
-  .attr('transform', `translate(${ margin.left }, 0)`)
+  .attr('transform', `translate(${margin.left}, 0)`);
 
 const gNode = svg
   .append('g')
   .attr('cursor', 'pointer')
   .attr('pointer-events', 'all')
-  .attr('transform', `translate(${ margin.left }, 0)`)
-console.log(root.copy())
+  .attr('transform', `translate(${margin.left}, 0)`);
+console.log(root.copy());
 // When we click source, we want to set the parent's children to just source.
 function update(source) {
   const duration = d3.event && d3.event.altKey ? 2500 : 250;
@@ -138,24 +138,10 @@ function update(source) {
   const links = root.links();
 
   // Compute the new tree layout.
-  const root2 = root.copy();
-  partition(root2.sum(d => d.value))
-  tree(root);
-  console.log(root, root2)
-
-  let left = root;
-  let right = root;
-  root.eachBefore(node => {
-    if (node.x < left.x) left = node;
-    if (node.x > right.x) right = node;
-  });
-
-  const height = right.x - left.x + margin.top + margin.bottom;
-  console.log([-margin.left, left.x - margin.top, width, height])
+  partition(root.sum(d => d.value));
   const transition = svg
     .transition()
     .duration(duration)
-    // .attr('viewBox', [-margin.left, left.x - margin.top, width, height])
     .tween(
       'resize',
       window.ResizeObserver ? null : () => () => svg.dispatch('toggle'),
@@ -168,7 +154,7 @@ function update(source) {
   const nodeEnter = node
     .enter()
     .append('g')
-    // .attr('transform', d => `translate(${source.y0},${source.x0})`)
+    // .attr('transform', d => `translate(${source.y0},${(source.x0 + source.x1) / 2})`)
     .attr('fill-opacity', 0)
     .attr('stroke-opacity', 0)
     .on('click', (event, d) => {
@@ -192,13 +178,15 @@ function update(source) {
     .attr('x', d => (d._children ? -6 : 6))
     .attr('text-anchor', d => (d.parent ? 'start' : 'end'))
     .attr('font-size', d => {
-      const max = 30
-      const min = 5
+      const max = 30;
+      const min = 5;
       let numChild = d.data.children.length;
-      let font = numChild//Math.sqrt(numChild)
-      if (font>max) {return max + "px"}
-      else if (font<min) {return min + "px"}
-      else return font + "px"
+      let font = numChild; //Math.sqrt(numChild)
+      if (font > max) {
+        return max + 'px';
+      } else if (font < min) {
+        return min + 'px';
+      } else return font + 'px';
     })
     .text(d => d.data.token)
     .each(function (d, i) {
@@ -214,35 +202,38 @@ function update(source) {
   const nodeUpdate = node
     .merge(nodeEnter)
     .transition(transition)
-    .attr('transform', d => `translate(${d.y},${d.x})`)
+    .attr('transform', d => `translate(${d.y0},${(d.x0 + d.x1) / 2})`)
     .attr('fill-opacity', 1)
     .attr('stroke-opacity', 1);
 
   // Transition exiting nodes to the parent's new position.
-  const nodeExit = node
-    .exit()
+  const nodeExit = node.exit().remove();
+  /*
     .transition(transition)
     .remove()
-    .attr('transform', d => `translate(${source.y},${source.x})`)
     .attr('fill-opacity', 0)
+    // .attr('transform', d => `translate(${source.parent.y0},${(source.parent.x0 + source.parent.x1) / 2})`)
     .attr('stroke-opacity', 0);
+    */
 
   // Update the links…
   const link = gLink.selectAll('path').data(links, d => d.target.id);
+  console.log(links, nodes);
 
   // Enter any new links at the parent's previous position.
   const linkEnter = link
     .enter()
     .append('path')
-    /* 
     .attr('d', (d, i) => {
       const o = {
-        x: source.x0,
-        y: source.y0,
+        y: source._y0 + (source.parent ? textWidths[source.data.token] : 0),
+        x: (source._x1 + source._x0) / 2,
       };
-      return diagonal({ source: o, target: o });
+      return diagonal({
+        source: o,
+        target: o,
+      });
     });
-    */ 
 
   // Transition links to their new position.
   link
@@ -251,28 +242,41 @@ function update(source) {
     .attr('d', d => {
       return diagonal({
         source: {
-          y: d.source.y + (d.source.parent ? textWidths[d.source.data.token] : 0),
-          x: d.source.x,
+          y:
+            d.source.y0 +
+            (d.source.parent ? textWidths[d.source.data.token] : 0),
+          x: (d.source.x1 + d.source.x0) / 2,
         },
-        target: d.target,
+        target: {
+          y: d.target.y0,
+          x: (d.target.x1 + d.target.x0) / 2,
+        },
       });
     });
 
   // Transition exiting nodes to the parent's new position.
-  link
-    .exit()
+  link.exit().remove();
+  /*
     .transition(transition)
     .remove()
     .attr('d', d => {
       const o = { x: source.x, y: source.y };
       return diagonal({ source: o, target: o });
     });
+    */
 
-  /* Stash the old positions for transition.
+  // Stash the old positions for transition.
   root.eachBefore(d => {
-    d.x0 = d.x;
-    d.y0 = d.y;
-  }); */
+    d._x0 = d.x0;
+    d._y0 = d.y0;
+    d._x1 = d.x1;
+    d._y1 = d.y1;
+  });
 }
 
 update(root);
+
+
+export function jason(selection) {
+  console.log(selection, 'is here now')
+}

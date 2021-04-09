@@ -1,5 +1,6 @@
 import corpus from '../../data/corpus.json';
 import links from '../../data/chordData.json';
+import { jason } from './word-tree.js';
 
 import * as d3 from 'd3';
 
@@ -92,6 +93,7 @@ function update(selection) {
         }
         //console.log(selection)
         update(selection)
+        jason(selection);
       })
   );
 
