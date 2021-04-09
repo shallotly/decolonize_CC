@@ -26,9 +26,10 @@ const graph = { nodes: nodes, links: links };
 
 // set the dimensions and margins of the graph
 const margin = { top: 20, right: 30, bottom: 20, left: 30 },
-  width = 1000 - margin.left - margin.right,
-  height = 520 - margin.top - margin.bottom;
+  width = 300 - margin.left - margin.right,
+  height = 400 - margin.top - margin.bottom;
 
+const color = d3.scaleOrdinal(names, d3.schemeCategory10);
 // append the svg object to the body of the page
 var svg = d3
   .select('.arc-chart')
@@ -39,65 +40,83 @@ var svg = d3
   .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
 // A linear scale to position the nodes on the X axis
-const x = d3.scalePoint().range([0, width]).domain(names);
+const y = d3.scalePoint(
+  graph.nodes.map(d => d.name),
+  [margin.top, height - margin.bottom],
+);
 
-// Add the circle for the nodes
-svg
-  .selectAll('.arcNodes')
+const label = svg
+  .append('g')
+  .attr('font-family', 'sans-serif')
+  .attr('font-size', 10)
+  .attr('text-anchor', 'end')
+  .selectAll('g')
   .data(graph.nodes)
-  .enter()
-  .append('circle')
-  .attr('cx', function (d) {
-    return x(d.name);
-  })
-  .attr('cy', height - 30)
-  .attr('r', 8)
-  .style('fill', '#69b3a2');
+  .join('g')
+  .attr('transform', d => `translate(${margin.left},${(d.y = y(d.name))})`)
+  .call(g =>
+    g
+      .append('text')
+      .attr('x', -6)
+      .attr('dy', '0.35em')
+      .attr('fill', 'black') // d => d3.lab(color(d.group)).darker(2))
+      .text(d => d.name),
+  )
+  .call(g =>
+    g
+      .append('circle')
+      .attr('r', 3)
+      .attr('fill', d => color(d.name)),
+  );
 
-// And give them a label
-svg
-  .selectAll('.arcNodeLabels')
+const path = svg
+  .insert('g', '*')
+  .attr('fill', 'none')
+  .attr('stroke-opacity', 0.6)
+  .attr('stroke-width', 1.5)
+  .selectAll('path')
+  .data(graph.links)
+  .join('path')
+  .attr('stroke', '#aaa')
+  .attr('d', arc);
+
+const overlay = svg
+  .append('g')
+  .attr('fill', 'none')
+  .attr('pointer-events', 'all')
+  .selectAll('rect')
   .data(graph.nodes)
-  .enter()
-  .append('text')
-  .attr('dx', '-.8em')
-  .attr('dy', '.15em')
-  .attr('transform', 'rotate(-65)')
-  .attr('x', function (d) {
-    return x(d.name);
+  .join('rect')
+  .attr('width', margin.left + 40)
+  .attr('height', step)
+  .attr('y', d => y(d.id) - step / 2)
+  .on('mouseover', d => {
+    svg.classed('hover', true);
+    label.classed('primary', n => n === d);
+    label.classed(
+      'secondary',
+      n =>
+        n.sourceLinks.some(l => l.target === d) ||
+        n.targetLinks.some(l => l.source === d),
+    );
+    path
+      .classed('primary', l => l.source === d || l.target === d)
+      .filter('.primary')
+      .raise();
   })
-  .attr('y', height - 10)
-  .text(function (d) {
-    return d.name;
+  .on('mouseout', d => {
+    svg.classed('hover', false);
+    label.classed('primary', false);
+    label.classed('secondary', false);
+    path.classed('primary', false).order();
   });
 
-// Add the links
-svg
-  .selectAll('arcLinks')
-  .data(graph.links)
-  .enter()
-  .append('path')
-  .attr('d', function (d) {
-    //console.log(d)
-    let start = x(d.source); // X position of start node on the X axis
-    let end = x(d.target); // X position of end node
-    return [
-      'M',
-      start,
-      height - 30, // the arc starts at the coordinate x=start, y=height-30 (where the starting node is)
-      'A', // This means we're gonna build an elliptical arc
-      (start - end) / 2,
-      ',', // Next 2 lines are the coordinates of the inflexion point. Height of this point is proportional with start - end distance
-      (start - end) / 2,
-      0,
-      0,
-      ',',
-      start < end ? 1 : 0,
-      end,
-      ',',
-      height - 30,
-    ] // We always want the arc on top. So if end is before start, putting 0 here turn the arc upside down.
-      .join(' ');
-  })
-  .style('fill', 'none')
-  .attr('stroke', 'black');
+function arc(d) {
+  console.log(d);
+  const y1 = y(d.source);
+  const y2 = y(d.target);
+  const r = Math.abs(y2 - y1) / 2;
+  return `M${margin.left},${y1}A${r},${r} 0,0,${y1 < y2 ? 1 : 0} ${
+    margin.left
+  },${y2}`;
+}
