@@ -166,7 +166,7 @@ function update(source) {
   const nodeEnter = node
     .enter()
     .append('g')
-    .attr('transform', d => `translate(${source.y0},${source.x0})`)
+    // .attr('transform', d => `translate(${source.y0},${source.x0})`)
     .attr('fill-opacity', 0)
     .attr('stroke-opacity', 0)
     .on('click', (event, d) => {
@@ -232,6 +232,7 @@ function update(source) {
   const linkEnter = link
     .enter()
     .append('path')
+    /* 
     .attr('d', (d, i) => {
       const o = {
         x: source.x0,
@@ -239,6 +240,7 @@ function update(source) {
       };
       return diagonal({ source: o, target: o });
     });
+    */ 
 
   // Transition links to their new position.
   link
@@ -264,11 +266,11 @@ function update(source) {
       return diagonal({ source: o, target: o });
     });
 
-  // Stash the old positions for transition.
+  /* Stash the old positions for transition.
   root.eachBefore(d => {
     d.x0 = d.x;
     d.y0 = d.y;
-  });
+  }); */
 }
 
 update(root);
