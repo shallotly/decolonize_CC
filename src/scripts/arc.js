@@ -1,9 +1,10 @@
 import corpus from '../../data/corpus.json';
 import links from '../../data/chordData.json';
-import { jason } from './word-tree.js';
+import { updateData } from './word-tree.js';
 
 import * as d3 from 'd3';
 
+const searchWord = 'india';
 const names = corpus.map((i, d) => i['author']);
 const nodes = names.map((d, i) => {
   let sourceLinks = [];
@@ -93,7 +94,7 @@ function update(selection) {
         }
         //console.log(selection)
         update(selection)
-        jason(selection);
+        updateData(selection,searchWord);
       })
   );
 
@@ -105,6 +106,7 @@ function update(selection) {
 }
 
 update(selected);
+updateData(selected,searchWord);
 
 function arc(d) {
   const y1 = y(d.source);

@@ -3,45 +3,71 @@ import corpus from '../../data/corpus.json';
 import * as d3 from 'd3';
 
 /*-------------------Data Processing---------------------*/
-const searchWord = 'india';
+let head;
+let root;
 
-const tokenized = [];
-for (let i = 0; i < corpus.length; i++) {
-  corpus[i].text = corpus[i].text.toLowerCase().replace(/(\r\n|\n|\r)/gm, ' ');
-  var arr = corpus[i].text
-    .replace(/[^\w\s]|_/g, function ($1) {
-      return ' ' + $1 + ' ';
-    })
-    .replace(/[ ]+/g, ' ')
-    .split(' ');
-  tokenized.push(arr);
-}
+export function updateData(selection, searchWord) {
+  const tokenized = [];
+  for (let i = 0; i < corpus.length; i++) {
+    if (selection.includes(corpus[i].author)) {
+      corpus[i].text = corpus[i].text
+        .toLowerCase()
+        .replace(/(\r\n|\n|\r)/gm, ' ');
+      var arr = corpus[i].text
+        .replace(/[^\w\s]|_/g, function ($1) {
+          return ' ' + $1 + ' ';
+        })
+        .replace(/[ ]+/g, ' ')
+        .split(' ');
+      tokenized.push(arr);
+    }
+  }
 
-let prefix = new Map();
-const head = createNode(searchWord);
-prefix.set(searchWord, head);
-let parent = head;
+  let prefix = new Map();
+  head = createNode(searchWord);
+  prefix.set(searchWord, head);
+  let parent = head;
 
-const len = 35;
-for (let i = 0; i < tokenized.length; i++) {
-  for (let j = 0; j < tokenized[i].length; j++) {
-    if (tokenized[i][j] != searchWord) {
-      continue;
-    } else {
-      for (let k = 1; k < len; k++) {
-        let prf = tokenized[i].slice(j, j + k);
-        let s = prf.join(' ');
-        if (prefix.has(s)) {
-          parent = prefix.get(s);
-        } else {
-          let node = createNode(tokenized[i][j + k - 1]);
-          prefix.set(s, node);
-          parent.children.push(node);
-          parent = node;
+  const len = 35;
+  for (let i = 0; i < tokenized.length; i++) {
+    for (let j = 0; j < tokenized[i].length; j++) {
+      if (tokenized[i][j] != searchWord) {
+        continue;
+      } else {
+        for (let k = 1; k < len; k++) {
+          let prf = tokenized[i].slice(j, j + k);
+          let s = prf.join(' ');
+          if (prefix.has(s)) {
+            parent = prefix.get(s);
+          } else {
+            let node = createNode(tokenized[i][j + k - 1]);
+            prefix.set(s, node);
+            parent.children.push(node);
+            parent = node;
+          }
         }
       }
     }
   }
+
+  traverseTree(head);
+
+  console.log(head)
+
+  root = d3
+    .hierarchy(head)
+    .sort((a, b) => b.data.children.length - a.data.children.length);
+  root._x0 = 0;
+  root._x1 = width; // or is it height?
+  root._y0 = 0;
+  root._y1 = 133.33;
+  root.descendants().forEach((d, i) => {
+    d.id = i;
+    d._children = d.children;
+    if (!d.height) d.children = null; //&& d.data.token.length !== 7
+  });
+  console.log(root)
+  update(root);
 }
 
 function createNode(word) {
@@ -50,9 +76,6 @@ function createNode(word) {
     children: [],
   };
 }
-
-let test = {};
-test = Object.assign(test, head);
 
 function traverseTree(node) {
   if (node.children.length > 1) {
@@ -69,24 +92,20 @@ function traverseTree(node) {
 }
 
 function compressChild(node) {
-  //if (node.children.length == 0){
-  //  node.children = undefined
-  //} else if(node.children.length<2 ){
   let child = node.children.pop();
   node.token = node.token + ' ' + child.token;
   node.children = child.children;
-  //}
 }
-
-traverseTree(head);
-console.log(head);
 
 /*-------------------Word Tree---------------------*/
 const margin = { top: 10, right: 120, bottom: 10, left: 160 };
 const width = 1000;
-const height = 800;
+const height = 720;
 
-const partition = d3.partition().size([800-margin.top-margin.bottom, 800]);
+const partition = d3
+  .partition()
+  .size([height - margin.top - margin.bottom, 600])
+  .padding([0.5]);
 
 const textWidths = {}; // Mapping from numChild to width of <text> element
 
@@ -94,21 +113,6 @@ const diagonal = d3
   .linkHorizontal()
   .x(d => d.y)
   .y(d => d.x);
-const root = d3
-  .hierarchy(head)
-  .sort((a, b) => b.data.children.length - a.data.children.length);
-const maxFont = 54;
-
-root._x0 = 0;
-root._x1 = width; // or is it height?
-root._y0 = 0;
-root._y1 = 133.33;
-root.descendants().forEach((d, i) => {
-  //console.log(d)
-  d.id = i;
-  d._children = d.children;
-  if (!d.height) d.children = null; //&& d.data.token.length !== 7
-});
 
 const svg = d3
   .select('.word-tree')
@@ -130,7 +134,7 @@ const gNode = svg
   .attr('cursor', 'pointer')
   .attr('pointer-events', 'all')
   .attr('transform', `translate(${margin.left}, 0)`);
-console.log(root.copy());
+
 // When we click source, we want to set the parent's children to just source.
 function update(source) {
   const duration = d3.event && d3.event.altKey ? 2500 : 250;
@@ -148,7 +152,7 @@ function update(source) {
     );
 
   // Update the nodes…
-  const node = gNode.selectAll('g').data(nodes, d => d.id);
+  const node = gNode.selectAll('g').data(nodes, d => d.data.token);//d.id);
 
   // Enter any new nodes at the parent's previous position.
   const nodeEnter = node
@@ -166,12 +170,6 @@ function update(source) {
       update(d);
     });
 
-  // nodeEnter
-  //   .append('circle')
-  //   .attr('r', 2.5)
-  //   .attr('fill', d => (d._children ? '#555' : '#999'))
-  //   .attr('stroke-width', 10);
-
   nodeEnter
     .append('text')
     .attr('dy', '0.31em')
@@ -179,14 +177,14 @@ function update(source) {
     .attr('text-anchor', d => (d.parent ? 'start' : 'end'))
     .attr('font-size', d => {
       const max = 30;
-      const min = 5;
+      const min = (nodes.length>125) ? 7 : 15;
       let numChild = d.data.children.length;
-      let font = numChild; //Math.sqrt(numChild)
-      if (font > max) {
+      let font = numChild//Math.sqrt(numChild)
+      if ((font + min) > max) {
         return max + 'px';
       } else if (font < min) {
         return min + 'px';
-      } else return font + 'px';
+      } else return (font+min) + 'px';
     })
     .text(d => d.data.token)
     .each(function (d, i) {
@@ -204,21 +202,25 @@ function update(source) {
     .transition(transition)
     .attr('transform', d => `translate(${d.y0},${(d.x0 + d.x1) / 2})`)
     .attr('fill-opacity', 1)
-    .attr('stroke-opacity', 1);
+    .attr('stroke-opacity', 1)
+    .selectAll('text')
+    .attr('font-size', d => {
+      const max = 30;
+      const min = (nodes.length>125) ? 7 : 12
+      let numChild = d.data.children.length;
+      let font = numChild//Math.sqrt(numChild)
+      if ((font + min) > max) {
+        return max + 'px';
+      } else if (font < min) {
+        return min + 'px';
+      } else return (font+min) + 'px';
+    });
 
   // Transition exiting nodes to the parent's new position.
   const nodeExit = node.exit().remove();
-  /*
-    .transition(transition)
-    .remove()
-    .attr('fill-opacity', 0)
-    // .attr('transform', d => `translate(${source.parent.y0},${(source.parent.x0 + source.parent.x1) / 2})`)
-    .attr('stroke-opacity', 0);
-    */
 
   // Update the links…
   const link = gLink.selectAll('path').data(links, d => d.target.id);
-  console.log(links, nodes);
 
   // Enter any new links at the parent's previous position.
   const linkEnter = link
@@ -256,14 +258,6 @@ function update(source) {
 
   // Transition exiting nodes to the parent's new position.
   link.exit().remove();
-  /*
-    .transition(transition)
-    .remove()
-    .attr('d', d => {
-      const o = { x: source.x, y: source.y };
-      return diagonal({ source: o, target: o });
-    });
-    */
 
   // Stash the old positions for transition.
   root.eachBefore(d => {
@@ -274,9 +268,3 @@ function update(source) {
   });
 }
 
-update(root);
-
-
-export function jason(selection) {
-  console.log(selection, 'is here now')
-}
