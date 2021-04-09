@@ -86,7 +86,7 @@ const width = 1200;
 const height = 720;
 const dx = 10;
 const dy = width / 10;
-const tree = d3.tree().size([width, height-200]);
+const tree = d3.tree().size([width, height-400]);
 
 const textWidths = {}; // Mapping from numChild to width of <text> element
 

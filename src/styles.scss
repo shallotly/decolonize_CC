@@ -25,3 +25,10 @@
 .word-tree {
     user-select:none;
 }
+
+.arc-chart {
+    svg {
+        margin: 0 auto;
+        display: block;
+    }
+}

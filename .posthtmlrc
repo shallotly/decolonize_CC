@@ -25,6 +25,12 @@
           {
             "type": "graphic",
             "value": {
+              "asset": "arc.html"
+            }
+          },
+          {
+            "type": "graphic",
+            "value": {
               "asset": "word-tree.html"
             }
           }
