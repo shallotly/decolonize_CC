@@ -83,10 +83,11 @@ console.log(head);
 /*-------------------Word Tree---------------------*/
 const margin = { top: 10, right: 120, bottom: 10, left: 160 };
 const width = 1200;
-const height = 720;
+const height = 1200;
 const dx = 10;
 const dy = width / 10;
-const tree = d3.tree().size([width, height-400]);
+const tree = d3.tree().size([width, height - 400]);
+const partition = d3.partition().size([width, height - 400])
 
 const textWidths = {}; // Mapping from numChild to width of <text> element
 
@@ -110,7 +111,7 @@ root.descendants().forEach((d, i) => {
 const svg = d3
   .select('.word-tree')
   .append('svg')
-  .attr('viewBox', [-margin.left, -margin.top, width, dx])
+  // .attr('viewBox', [-margin.left, -margin.top, width, dx])
   .attr('height', height)
   .attr('width', width);
 
@@ -119,12 +120,14 @@ const gLink = svg
   .attr('fill', 'none')
   .attr('stroke', '#555')
   .attr('stroke-opacity', 0.4)
-  .attr('stroke-width', 1.5);
+  .attr('stroke-width', 1.5)
+  .attr('transform', `translate(${ margin.left }, 0)`)
 
 const gNode = svg
   .append('g')
   .attr('cursor', 'pointer')
-  .attr('pointer-events', 'all');
+  .attr('pointer-events', 'all')
+  .attr('transform', `translate(${ margin.left }, 0)`)
 
 // When we click source, we want to set the parent's children to just source.
 function update(source) {
@@ -133,7 +136,10 @@ function update(source) {
   const links = root.links();
 
   // Compute the new tree layout.
+  const root2 = root.copy();
+  partition(root2)
   tree(root);
+  console.log(root, root2)
 
   let left = root;
   let right = root;
@@ -147,7 +153,7 @@ function update(source) {
   const transition = svg
     .transition()
     .duration(duration)
-    .attr('viewBox', [-margin.left, left.x - margin.top, width, height])
+    // .attr('viewBox', [-margin.left, left.x - margin.top, width, height])
     .tween(
       'resize',
       window.ResizeObserver ? null : () => () => svg.dispatch('toggle'),
