@@ -90,7 +90,7 @@ function update(selection) {
         } else {
           selection.push(d.name)
         }
-        console.log(selection)
+        //console.log(selection)
         update(selection)
       })
   );

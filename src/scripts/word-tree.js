@@ -184,15 +184,13 @@ function update(source) {
     .attr('x', d => (d._children ? -6 : 6))
     .attr('text-anchor', d => (d.parent ? 'start' : 'end'))
     .attr('font-size', d => {
+      const max = 30
+      const min = 5
       let numChild = d.data.children.length;
-      if (numChild > 15) {
-        return numChild + 'px';
-      } else if (numChild <= 1) {
-        return '14px';
-      } else {
-        let size = 20 + 2 * numChild;
-        return size + 'px';
-      }
+      let font = numChild//Math.sqrt(numChild)
+      if (font>max) {return max + "px"}
+      else if (font<min) {return min + "px"}
+      else return font + "px"
     })
     .text(d => d.data.token)
     .each(function (d, i) {
