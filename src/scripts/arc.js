@@ -81,14 +81,16 @@ function update(selection) {
       .attr('fill', d => {
         if (selection.includes(d.name)) {
           return color(d.name);
-        } else return '#333';
+        } else return '#aaa';
       })
       .on('click',(event, d) => {
         if (selection.includes(d.name)){
-          selection.pop(d.name)
+          let index = selection.indexOf(d.name)
+          selection.splice(index,1)
         } else {
           selection.push(d.name)
         }
+        console.log(selection)
         update(selection)
       })
   );
@@ -96,7 +98,7 @@ function update(selection) {
   path.attr('stroke', d => {
     if (selection.includes(d.target)) {
       return color(d.target);
-    } else return '#333';
+    } else return '#aaa';
   });
 }
 
