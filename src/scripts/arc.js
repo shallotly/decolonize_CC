@@ -23,9 +23,9 @@ const nodes = names.map((d, i) => {
 });
 
 const graph = { nodes: nodes, links: links };
-
+let selected = graph.nodes.map(d => d.name);
 // set the dimensions and margins of the graph
-const margin = { top: 20, right: 30, bottom: 20, left: 30 },
+const margin = { top: 20, right: 30, bottom: 20, left: 60 },
   width = 300 - margin.left - margin.right,
   height = 400 - margin.top - margin.bottom;
 
@@ -61,12 +61,6 @@ const label = svg
       .attr('dy', '0.35em')
       .attr('fill', 'black') // d => d3.lab(color(d.group)).darker(2))
       .text(d => d.name),
-  )
-  .call(g =>
-    g
-      .append('circle')
-      .attr('r', 3)
-      .attr('fill', d => color(d.name)),
   );
 
 const path = svg
@@ -77,42 +71,38 @@ const path = svg
   .selectAll('path')
   .data(graph.links)
   .join('path')
-  .attr('stroke', '#aaa')
   .attr('d', arc);
 
-const overlay = svg
-  .append('g')
-  .attr('fill', 'none')
-  .attr('pointer-events', 'all')
-  .selectAll('rect')
-  .data(graph.nodes)
-  .join('rect')
-  .attr('width', margin.left + 40)
-  .attr('height', step)
-  .attr('y', d => y(d.id) - step / 2)
-  .on('mouseover', d => {
-    svg.classed('hover', true);
-    label.classed('primary', n => n === d);
-    label.classed(
-      'secondary',
-      n =>
-        n.sourceLinks.some(l => l.target === d) ||
-        n.targetLinks.some(l => l.source === d),
-    );
-    path
-      .classed('primary', l => l.source === d || l.target === d)
-      .filter('.primary')
-      .raise();
-  })
-  .on('mouseout', d => {
-    svg.classed('hover', false);
-    label.classed('primary', false);
-    label.classed('secondary', false);
-    path.classed('primary', false).order();
+function update(selection) {
+  label.call(g =>
+    g
+      .append('circle')
+      .attr('r', 5)
+      .attr('fill', d => {
+        if (selection.includes(d.name)) {
+          return color(d.name);
+        } else return '#333';
+      })
+      .on('click',(event, d) => {
+        if (selection.includes(d.name)){
+          selection.pop(d.name)
+        } else {
+          selection.push(d.name)
+        }
+        update(selection)
+      })
+  );
+
+  path.attr('stroke', d => {
+    if (selection.includes(d.target)) {
+      return color(d.target);
+    } else return '#333';
   });
+}
+
+update(selected);
 
 function arc(d) {
-  console.log(d);
   const y1 = y(d.source);
   const y2 = y(d.target);
   const r = Math.abs(y2 - y1) / 2;
