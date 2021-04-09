@@ -63,9 +63,11 @@ function traverseTree(node) {
     compressChild(node);
     traverseTree(node);
   } else {
+    node.value = 1
     return null;
   }
 }
+
 
 function compressChild(node) {
   //if (node.children.length == 0){
@@ -128,7 +130,7 @@ const gNode = svg
   .attr('cursor', 'pointer')
   .attr('pointer-events', 'all')
   .attr('transform', `translate(${ margin.left }, 0)`)
-
+console.log(root.copy())
 // When we click source, we want to set the parent's children to just source.
 function update(source) {
   const duration = d3.event && d3.event.altKey ? 2500 : 250;
@@ -137,7 +139,7 @@ function update(source) {
 
   // Compute the new tree layout.
   const root2 = root.copy();
-  partition(root2)
+  partition(root2.sum(d => d.value))
   tree(root);
   console.log(root, root2)
 
