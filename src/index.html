@@ -46,6 +46,9 @@
           <case n="'image'">
             <include src="partials/image.html"></include>
           </case>
+          <case n="'list'">
+            <div class="g-body" ><ul><each loop="x in item.value"> <li class="paragraph">{{ x }}</li></ul></div>
+            </case>
           <case n="'graphic'">
             <div class="graphic">
               <if condition="item.value.asset === 'chord-chart.html'">

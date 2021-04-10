@@ -7,6 +7,8 @@ let head;
 let root;
 const color = d3.scaleOrdinal(corpus.map(d=>d.author), d3.schemeCategory10);
 
+console.log(corpus.map(d=>d.title))
+
 export function updateData(selection, searchWord) {
   const tokenized = [];
   for (let i = 0; i < corpus.length; i++) {

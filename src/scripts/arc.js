@@ -4,7 +4,7 @@ import { updateData } from './word-tree.js';
 
 import * as d3 from 'd3';
 
-const searchWord = 'india';
+const searchWord = 'savage';
 const names = corpus.map((i, d) => i['author']);
 const nodes = names.map((d, i) => {
   let sourceLinks = [];

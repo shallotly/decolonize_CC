@@ -19,12 +19,28 @@
         ],
         "body": [
           {
+            "type": "subhed",
+            "value": "Why compute?"
+          },
+          {
             "type": "text",
-            "value": "In this project, I explored the CC curriculum through computing and visualizing a collection of text by 15 authors (Plato, Aristotle, Augustine, Descartes, Hobbes, Locke, Rousseau, Kant, Smith, Burke, Wollstonecraft, Tocqueville, Mill, Marx, and Darwin), plus the Bible."
+            "value": "Criticisms of the Contemporary Civilization curriculum and the process of and the effort in changing it has been in the discourse among students and faculties. One <a href=\"https://www.columbiaspectator.com/opinion/2017/10/26/the-problematic-past-of-contemporary-civilization/\">article in the opinion section by Tommy Song</a> criticized the Core for its origin in “Woodrow Wilson’s doctrines of intervention and anti-isolationism for the sake of capitalism and democracy, solidifying the belief that the West must decide the fate of other states and peoples”, as well as its acceptance of the “Eurocentric canons and practices, keeping the same ugly form that was established when Columbia was, as University President Butler declared 111 years ago, a ‘Christian institution.’” While another <a href=\"https://www.columbiaspectator.com/opinion/2018/12/19/lets-talk-about-cc/\">opinion article</a> by Emmanuelle Saada, Chair of Contemporary Civilization, stated that the effort to change the pedagogical significance of Contemporary Civilization is reflected in the inclusion of “texts that explore and challenge assumptions about a ‘European tradition,’” these additions are also criticized by Tommy as feeling “tacked-on and last-minute.”"
+          },
+          {
+            "type": "text",
+            "value": "In my personal experience, I have learned a ton about how the discourses of the authors we read shaped our world, sometimes in very horrifying ways. We observed patterns in arguments made by different authors that established a foundation for practices in the world right now, and we also discovered the dependency of these works upon each other through reading the citations. Thus, I envisioned to capture these patterns in rhetorics and intertextual connections while also building a tool for more people to access and assess the CC curriculum for themselves."
           },
           {
             "type": "subhed",
-            "value": ""
+            "value": "How to compute?"
+          },
+          {
+            "type": "text",
+            "value": "In this project, I explored the CC curriculum through computing and visualizing a collection of 16 texts (<i>The Republic</i>, <i>Politics</i>, <i>The Bible</i>, <i>The City of God, Volume I, Discourse on the Method of Rightly Conducting One's Reason and of Seeking Truth in the Sciences</i>, <i>Leviathan, Second Treatise of Government</i>, <i>The Social Contract and Discourses</i>, <i>Fundamental Principles of the Metaphysic of Morals</i>, <i>An Inquiry into the Nature and Causes of the Wealth of Nations, The Works of the Right Honourable Edmund Burke</i>, <i>Vindication of the Rights of Woman</i>, <i>Democracy in America</i>, <i>On Liberty</i>, <i>A Contribution to The Critique Of The Political Economy, On the Origin of Species By Means of Natural Selection</i>) by 15 authors (Plato, Aristotle, Augustine, Descartes, Hobbes, Locke, Rousseau, Kant, Smith, Burke, Wollstonecraft, Tocqueville, Mill, Marx, and Darwin)."
+          },
+          {
+            "type": "text",
+            "value": "My first approach is to capture the discourse among these authors through observing their citational practices. I started out with obtaining these texts from Project Gutenberg, which provides digital forms of these texts for free. I then counted the occurrence of names of the other authors for each text, which produced a matrix. From the matrix, I developed this chord diagram which sketches the citation of other writers by the arcs. Each directed arc represents citation by one author of another author, and the width of the arc is scaled by the number of times a particular citation occurs."
           },
           {
             "type": "graphic",
@@ -33,15 +49,61 @@
             }
           },
           {
+            "type": "text",
+            "value": "There are several observations I made:"
+          },
+          {
+            "type": "list",
+            "value": [
+              "The sheer amount of Plato content in Augustine?",
+              "There are many links between different authors, which shows that each piece of the circumference representing the authors are very interconnected. This raises the question of whether some ideas in CC curriculum are self-contained, and if so what does the canon really represent?",
+              "While this chart seems messy, it is missing a lot of information in terms of how this interconnectedness impacts the ideas and arguments of each author. And we need to look deeper into the actual text for that."
+            ]
+          },
+          {
+            "type": "subhed",
+            "value": "Interconnectedness"
+          },
+          {
+            "type": "text",
+            "value": "I have read secondary analysis of the primary work we read in CC, and most connections between arguments require a comprehensive understanding and theorizing of these authors and their ideas. An example can be the following from <a href=\"https://plato.stanford.edu/entries/rousseau/\">Stanford Encyclopedia of Philosophy</a>."
+          },
+          {
+            "type": "image",
+            "value": {
+              "width": "600",
+              "asset": "./stanford.png",
+              "caption": "",
+              "credit": ""
+            }
+          },
+          {
+            "type": "text",
+            "value": "I discovered that it is hard to compute such interconnectedness in the high level understanding (which is why we need amazing scholars like my classmates), but I wanted to show that instances of similar treatments among authors of certain entities, which eventually creates the theories, ideas, or rhetorics used nowadays, are easily accessible. This led me to create the word tree representation of these texts."
+          },
+          {
             "type": "graphic",
             "value": {
               "asset": "word-tree.html"
             }
+          },
+          {
+            "type": "subhed",
+            "value": "Going Forward"
+          },
+          {
+            "type": "text",
+            "value": "I wish this tool can assist in moments like “I remember reading a very bad argument by this author at some point, but I have to find it to support my argument about this author.” Given that, this project is still in the works. Next steps include developing a search function, so people are not restricted to only investigating the seven words I have used in my exploration, and allowing the choice between a prior context tree in addition to this tree which only includes the post context of the keyword."
+          },
+          {
+            "type": "text",
+            "value": "The big picture idea I want to communicate through this interactive tool is that many arguments of the CC authors are built based on the same train of thought from authors that came before them, that colonial or racists rhetoric didn’t appear at one moment in time but is developed through time, that we should learn and criticize the basis of these arguments that are racist, so to not continue to make decisions that comply with or are complacent to them."
           }
         ],
         "headline": "Decolonizing CC: The Canon From a Computational Perspective",
         "date": "Apr 9th, 2021",
         "byline": "By <a href=\"https://github.com/shallotly\">Charlotte Li</a>",
+        "footer": "Special thanks to Jason Kao for mental and technical support, Jason Davies who answered questions about implementing the word tree, and professor Agnes Chang who gave suggestions on visualizations.",
         "USE_NEWS_NAV": true,
         "USE_EYE_NAV": false,
         "USE_COVER_HED": false,
