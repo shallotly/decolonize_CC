@@ -108,6 +108,11 @@ function update(selection) {
 update(selected);
 updateData(selected,searchWord);
 
+d3.selectAll('.buttons span')
+.on('click', function () {
+  updateData(selected,this.innerHTML);
+})
+
 function arc(d) {
   const y1 = y(d.source);
   const y2 = y(d.target);

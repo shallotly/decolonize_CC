@@ -177,7 +177,7 @@ function update(source) {
     .attr('text-anchor', d => (d.parent ? 'start' : 'end'))
     .attr('font-size', d => { 
       const max = 30;
-      const min = (nodes.length>125) ? 7 : 15;
+      const min = (nodes.length>125) ? 7 : 12;
       let numChild = d.data.children.length;
       if ((numChild + min) > max) {
         return max + 'px';
@@ -206,7 +206,7 @@ function update(source) {
     .selectAll('text')
     .attr('font-size', d => {
       const max = 30;
-      const min = (nodes.length>125) ? 7 : 15;
+      const min = (nodes.length>125) ? 7 : 12;
       let numChild = d.data.children.length;
       if ((numChild + min) > max) {
         return max + 'px';
