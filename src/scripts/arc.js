@@ -4,7 +4,7 @@ import { updateData } from './word-tree.js';
 
 import * as d3 from 'd3';
 
-const searchWord = 'savage';
+let searchWord = 'savage';
 const names = corpus.map((i, d) => i['author']);
 const nodes = names.map((d, i) => {
   let sourceLinks = [];
@@ -110,7 +110,9 @@ updateData(selected,searchWord);
 
 d3.selectAll('.buttons span')
 .on('click', function () {
-  updateData(selected,this.innerHTML);
+  searchWord = this.innerHTML
+  console.log(searchWord)
+  updateData(selected,searchWord);
 })
 
 function arc(d) {
