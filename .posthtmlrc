@@ -103,7 +103,7 @@
         "headline": "Decolonizing CC: The Canon From a Computational Perspective",
         "date": "Apr 9th, 2021",
         "byline": "By <a href=\"https://github.com/shallotly\">Charlotte Li</a>",
-        "footer": "Special thanks to Jason Kao for mental and technical support, Jason Davies who answered questions about implementing the word tree, and professor Agnes Chang who gave suggestions on visualizations.",
+        "footer": "Special thanks to <a href=\"https://jasonkao.me/\">Jason Kao</a> for mental and technical support, <a href=\"https://www.jasondavies.com/\">Jason Davies</a> for answering questions about implementing the word tree, professor <a href=\"https://agneschang.net/\">Agnes Chang</a> for suggestions on visualizations, and professor <a href=\"https://twitter.com/sepoy?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor\">Manan Ahmed</a> for enlightening me on decolonization .",
         "USE_NEWS_NAV": true,
         "USE_EYE_NAV": false,
         "USE_COVER_HED": false,
