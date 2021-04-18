@@ -29,6 +29,10 @@
 .word-tree-container {
     display: flex;
     align-items: center;
+    justify-content: center;
+    text {
+      font-family: $georgia;
+    }
 }
 
 .cover {
@@ -39,15 +43,26 @@
 }
 
 .buttons {
-  margin: 0 auto;
+  margin: 10 auto;
   display: flex;
   justify-content: center;
   span {
     margin-right: 12px;
+    font-family: $georgia;
+    border-bottom: 1px solid #ccc;
+  }
+  span:hover{
+    border-bottom: 1px solid #444;
   }
 }
 .search {
   margin: 5 auto;
   display: flex;
   justify-content: center;
+  label {
+    font-family: $georgia;
+  }
+  button {
+    font-family: $georgia;
+  }
 }
