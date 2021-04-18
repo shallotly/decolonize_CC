@@ -9,7 +9,10 @@ const height = 720;
 const width = height;
 const innerRadius = Math.min(width, height) * 0.5 - 20;
 const outerRadius = innerRadius + 6;
-const color = d3.scaleOrdinal(names, d3.schemeCategory10);
+//const color = d3.scaleOrdinal(names, d3.schemeCategory10);
+const scale = d3.scaleOrdinal(corpus.map(d=>d.author),corpus.map((d,i) => {
+  return i*(1.0/(corpus.length-1.0))
+}))
 const ribbon = d3
   .ribbonArrow()
   .radius(innerRadius - 0.5)
@@ -47,14 +50,14 @@ function drawChords() {
     .join('path')
     .classed('chord', true)
     .attr('d', ribbon)
-    .attr('fill', d => color(names[d.target.index]))
+    .attr('fill', d => d3.interpolateTurbo(scale(names[d.target.index])))
     .style('mix-blend-mode', 'multiply');
 
   const chordPaths = d3.selectAll('.chord');
   chordPaths.on('mouseover', function (event, d) {
     const [xpos, ypos] = alert_coords(event);
-    chordPaths.attr('fill', '#333');
-    d3.select(this).attr('fill', d => color(names[d.target.index]));
+    chordPaths.attr('fill', '#d3d3d3');
+    d3.select(this).attr('fill', d => d3.interpolateTurbo(scale(names[d.target.index])));
     tgrp.attr('transform', (d, i) => `translate(${xpos},${ypos})`);
     tgrp
       .select('rect')
@@ -84,8 +87,8 @@ function drawChords() {
   });
 
 chordPaths.on('mouseout',function (event, d) {
-    d3.select(this).attr('fill', d => color(names[d.target.index]));
-    chordPaths.attr('fill', d => color(names[d.target.index]));
+    d3.select(this).attr('fill', d => d3.interpolateTurbo(scale(names[d.target.index])));//color(names[d.target.index]));
+    chordPaths.attr('fill', d => d3.interpolateTurbo(scale(names[d.target.index])));//color(names[d.target.index]));
     tgrp.select('rect').attr('opacity',0);
     tgrp.select('text').attr('opacity',0);
 });
@@ -101,7 +104,7 @@ chordPaths.on('mouseout',function (event, d) {
       g
         .append('path')
         .attr('d', arc)
-        .attr('fill', d => color(names[d.index]))
+        .attr('fill', d => d3.interpolateTurbo(scale(names[d.index])))//color(names[d.index]))
         .attr('stroke', '#fff'),
     )
     .call(g =>

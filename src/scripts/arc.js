@@ -1,23 +1,30 @@
 import corpus from '../../data/corpus.json';
 import links from '../../data/chordData.json';
-import { updateData } from './word-tree.js';
+import { updateAuthors, updateData } from './word-tree.js';
 
 import * as d3 from 'd3';
 
+//const color = d3.scaleOrdinal(names, d3.schemeCategory10);
+const scale = d3.scaleOrdinal(corpus.map(d=>d.author),corpus.map((d,i) => {
+  return i*(1.0/(corpus.length-1.0))
+}))
+
 let searchWord = 'savage';
 
+// for search 
 d3.select("button").on("click", function() {
   let input = d3.select("#search-word").node().value;
   if (input){
-    updateData(selected,input)
+    updateData(input)
   }
 })
 
+// for toggle
 d3.selectAll('.buttons span')
 .on('click', function () {
   searchWord = this.innerHTML
   //console.log(searchWord)
-  updateData(selected,searchWord);
+  updateData(searchWord);
 })
 
 
@@ -47,7 +54,6 @@ const margin = { top: 20, right: 30, bottom: 20, left: 60 },
   width = 300 - margin.left - margin.right,
   height = 400 - margin.top - margin.bottom;
 
-const color = d3.scaleOrdinal(names, d3.schemeCategory10);
 // append the svg object to the body of the page
 var svg = d3
   .select('.arc-chart')
@@ -98,8 +104,8 @@ function update(selection) {
       .attr('r', 5)
       .attr('fill', d => {
         if (selection.includes(d.name)) {
-          return color(d.name);
-        } else return '#aaa';
+          return d3.interpolateTurbo(scale(d.name));
+        } else return '#d3d3d3';
       })
       .on('click',(event, d) => {
         if (selection.includes(d.name)){
@@ -108,21 +114,23 @@ function update(selection) {
         } else {
           selection.push(d.name)
         }
-        //console.log(selection)
+        console.log(selection)
         update(selection)
-        updateData(selection,searchWord);
+        updateAuthors(selection)
+        updateData(searchWord);
       })
   );
 
   path.attr('stroke', d => {
     if (selection.includes(d.target)) {
-      return color(d.target);
-    } else return '#aaa';
+      return d3.interpolateTurbo(scale(d.target))//color(d.target);
+    } else return '#d3d3d3';
   });
 }
 
 update(selected);
-updateData(selected,searchWord);
+updateAuthors(selected);
+updateData(searchWord);
 
 function arc(d) {
   const y1 = y(d.source);

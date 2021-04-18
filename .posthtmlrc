@@ -19,8 +19,18 @@
         ],
         "body": [
           {
+            "type": "text",
+            "value": "Search for how specific words are used in the CC curriculum, or check out the sample words provided below."
+          },
+          {
+            "type": "graphic",
+            "value": {
+              "asset": "word-tree.html"
+            }
+          },
+          {
             "type": "subhed",
-            "value": "Why compute?"
+            "value": "Introduction"
           },
           {
             "type": "text",
@@ -32,15 +42,19 @@
           },
           {
             "type": "subhed",
-            "value": "How to compute?"
+            "value": "Methodology"
           },
           {
             "type": "text",
-            "value": "In this project, I explored the CC curriculum through data analysis and visualizing a collection of 16 texts (<i>The Republic</i>, <i>Politics</i>, <i>The Bible</i>, <i>The City of God, Volume I, Discourse on the Method of Rightly Conducting One's Reason and of Seeking Truth in the Sciences</i>, <i>Leviathan, Second Treatise of Government</i>, <i>The Social Contract and Discourses</i>, <i>Fundamental Principles of the Metaphysic of Morals</i>, <i>An Inquiry into the Nature and Causes of the Wealth of Nations, The Works of the Right Honourable Edmund Burke</i>, <i>Vindication of the Rights of Woman</i>, <i>Democracy in America</i>, <i>On Liberty</i>, <i>A Contribution to The Critique Of The Political Economy, On the Origin of Species By Means of Natural Selection</i>) by 15 authors (Plato, Aristotle, Augustine, Descartes, Hobbes, Locke, Rousseau, Kant, Smith, Burke, Wollstonecraft, Tocqueville, Mill, Marx, and Darwin)."
+            "value": "In this project, I explored the CC curriculum through text analysis and visualizing a collection of 16 texts (<i>The Republic</i>, <i>Politics</i>, <i>The Bible</i>, <i>The City of God, Volume I, Discourse on the Method of Rightly Conducting One's Reason and of Seeking Truth in the Sciences</i>, <i>Leviathan, Second Treatise of Government</i>, <i>The Social Contract and Discourses</i>, <i>Fundamental Principles of the Metaphysic of Morals</i>, <i>An Inquiry into the Nature and Causes of the Wealth of Nations, The Works of the Right Honourable Edmund Burke</i>, <i>Vindication of the Rights of Woman</i>, <i>Democracy in America</i>, <i>On Liberty</i>, <i>A Contribution to The Critique Of The Political Economy, On the Origin of Species By Means of Natural Selection</i>) by 15 authors (Plato, Aristotle, Augustine, Descartes, Hobbes, Locke, Rousseau, Kant, Smith, Burke, Wollstonecraft, Tocqueville, Mill, Marx, and Darwin)."
           },
           {
             "type": "text",
-            "value": "My first approach is to capture the discourse among these authors through observing their citational practices. I started out with obtaining these texts from Project Gutenberg, which provides digital forms of these texts for free. I then counted the occurrence of names of the other authors for each text, which produced a matrix. From the matrix, I developed this chord diagram which sketches the citation of other writers by the arcs. Each directed arc represents citation by one author of another author, and the width of the arc is scaled by the number of times a particular citation occurs."
+            "value": "My first approach is to capture the discourse among these authors through observing their citational practices.I obtained these texts from project Gutenberg with <a href=\"https://github.com/aparrish/gutenberg-dammit\">Gutenberg,dammit library</a>."
+          },
+          {
+            "type": "text",
+            "value": "I then counted the occurrence of names of the other authors for each text, which produced a co-occurrence matrix. In the matrix, I eliminated occurrences of later authors in an earlier text. From the matrix, I developed this chord diagram which sketches the citation of other writers by the arcs. Each directed arc represents citation of an author by another author, and the width of the arc is scaled by the number of times a particular citation occurs."
           },
           {
             "type": "graphic",
@@ -66,7 +80,7 @@
           },
           {
             "type": "text",
-            "value": "I have read secondary analysis of the primary work we read in CC, and most connections between arguments require a comprehensive understanding and theorizing of these authors and their ideas. An example can be the following from <a href=\"https://plato.stanford.edu/entries/rousseau/\">Stanford Encyclopedia of Philosophy</a>."
+            "value": "Extensive scholarly work has been done to evaluate the relationships and theories of these texts in the canon. An example can be the following from <a href=\"https://plato.stanford.edu/entries/rousseau/\">Stanford Encyclopedia of Philosophy</a>."
           },
           {
             "type": "image",
@@ -79,13 +93,11 @@
           },
           {
             "type": "text",
-            "value": "I discovered that it is hard to compute such interconnectedness in the high level understanding (which is why we need amazing scholars like my classmates), but I wanted to show that instances of similar treatments among authors of certain entities, which eventually creates the theories, ideas, or rhetorics used nowadays, are easily accessible. This led me to create the word tree representation of these texts."
+            "value": "However, these works not only require a comprehensive understanding of these authors and their theories at a high level, which might require years of study, but they also barely focus on the colonial value and influence of these theories and the authors who wrote them."
           },
           {
-            "type": "graphic",
-            "value": {
-              "asset": "word-tree.html"
-            }
+            "type": "text",
+            "value": "I realized that it is hard to compute such interconnectedness in the high level understanding (which is why we need amazing scholars like my classmates), but I wanted to show that instances of similar treatments among authors of certain entities, which eventually creates the theories, ideas, or rhetorics used nowadays, are easily accessible. I looked into prior projects that analyze meaning and associate several different occurrences of words, such as <a href=\"https://pudding.cool/2017/03/hamilton/\">An Interactive Visualization of Every Line in Hamilton</a>, and <a href=\"https://www.jasondavies.com/wordtree/\">Jason Davies’s Word Tree</a>. These projects inspired me to create the word tree representation of these texts."
           },
           {
             "type": "subhed",
