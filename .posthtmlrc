@@ -20,7 +20,7 @@
         "body": [
           {
             "type": "text",
-            "value": "Search for how specific words are used in the CC curriculum, or check out the sample words provided below."
+            "value": "Search for how specific words are used in the CC curriculum, or check out the sample words provided below. Click on the authors to remove them from the tree (or add them back in)."
           },
           {
             "type": "graphic",
@@ -76,7 +76,7 @@
           },
           {
             "type": "subhed",
-            "value": "Interconnectedness"
+            "value": "Process"
           },
           {
             "type": "text",
@@ -97,7 +97,11 @@
           },
           {
             "type": "text",
-            "value": "I realized that it is hard to compute such interconnectedness in the high level understanding (which is why we need amazing scholars like my classmates), but I wanted to show that instances of similar treatments among authors of certain entities, which eventually creates the theories, ideas, or rhetorics used nowadays, are easily accessible. I looked into prior projects that analyze meaning and associate several different occurrences of words, such as <a href=\"https://pudding.cool/2017/03/hamilton/\">An Interactive Visualization of Every Line in Hamilton</a>, and <a href=\"https://www.jasondavies.com/wordtree/\">Jason Davies’s Word Tree</a>. These projects inspired me to create the word tree representation of these texts."
+            "value": "I realized that it is hard to compute such interconnectedness in the high level understanding, but I can show the instances of similar treatments among authors of certain entities, which eventually creates the theories, ideas, or rhetorics used nowadays. I looked into prior projects that analyze meaning and associate several different occurrences of words, such as <a href=\"https://pudding.cool/2017/03/hamilton/\">An Interactive Visualization of Every Line in Hamilton</a>, and <a href=\"https://www.jasondavies.com/wordtree/\">Jason Davies’s Word Tree</a>. These projects inspired me to create the word tree representation of these texts."
+          },
+          {
+            "type": "text",
+            "value": "To create the tree, I used <a href=\"https://github.com/d3/d3-hierarchy/blob/master/README.md#hierarchy\">D3.hierarchy</a> and D3.partition. I parse the search word and its post context into a specific dependency tree structure which then is converted into a tree by D3.hierarchy and D3.partition provides some coordinates for node and link positions. (Lots of thanks to Jason Davies for helping me through this process). Lastly, I created the arc diagram and wrote the tree construction into an update function so it is interactive. One problem I encountered was the long processing time because of the large amount of the data to be tokenized, I solved this by breaking the data processing part into functions and creating a meta-tokenized text array when the page is loaded, (it still takes a bit to load the page, but the interaction is instant after this change)."
           },
           {
             "type": "subhed",
@@ -105,15 +109,15 @@
           },
           {
             "type": "text",
-            "value": "I wish this tool can assist in moments like “I remember reading a very bad argument by this author at some point, but I have to find it to support my argument about this author.” Given that, this project is still in the works. Next steps include developing a search function, so people are not restricted to only investigating the seven words I have used in my exploration, and allowing the choice between a prior context tree in addition to this tree which only includes the post context of the keyword."
+            "value": "I presented this project to both my CC class and my data viz class, and I think it is well received by both groups of people. While data visualization is a novel concept in the realm of humanities study (my CC class), Contemporary Civ is a familiar yet unexpected topic in data visualization. Thus, this project resonates with both communities, and continues to be a helpful tool for allowing more people to access the seemingly esoteric CC curriculum and for researching when writing CC papers."
           },
           {
             "type": "text",
-            "value": "The big picture idea I want to communicate through this interactive tool is that many arguments of the CC authors are built based on the same train of thought from authors that came before them, that colonial or racists rhetoric didn’t appear at one moment in time but is developed through time, that we should learn and criticize the basis of these arguments that are racist, so to not continue to make decisions that comply with or are complacent to them."
+            "value": "Given that, this project is still in the works. Next steps include allowing the choice between a prior context tree and the current tree which only includes the post context of the keyword and making a more advanced search function where a phrase or a sentence can be searched. Several people have also suggested exploring more parameters of the authors and texts for more insights about them, as well as exploring the change of the curriculum through time. All of which will make this project more insightful and accessible."
           }
         ],
         "headline": "Decolonizing CC: The Canon From a Computational Perspective",
-        "date": "Apr 9th, 2021",
+        "date": "Apr 18th, 2021",
         "byline": "By <a href=\"https://github.com/shallotly\">Charlotte Li</a>",
         "footer": "Special thanks to <a href=\"https://jasonkao.me/\">Jason Kao</a> for mental and technical support, <a href=\"https://www.jasondavies.com/\">Jason Davies</a> for answering questions about implementing the word tree, professor <a href=\"https://agneschang.net/\">Agnes Chang</a> for suggestions on visualizations, and professor <a href=\"https://twitter.com/sepoy?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor\">Manan Ahmed</a> for enlightening me on decolonization .",
         "USE_NEWS_NAV": true,
