@@ -17,21 +17,24 @@ corpus.forEach(
   ({ author }) => (authorColors[author] = d3.interpolateTurbo(scale(author))),
 );
 
-let tokenized = [];
+const tokenized = [];
+for (let i = 0; i < corpus.length; i++) {
+  corpus[i].text = corpus[i].text.toLowerCase().replace(/(\r\n|\n|\r)/gm, ' ');
+  var arr = corpus[i].text
+    .replace(/[^\w\s]|_/g, function ($1) {
+      return ' ' + $1 + ' ';
+    })
+    .replace(/[ ]+/g, ' ')
+    .split(' ');
+  tokenized.push({ author: corpus[i].author, text: arr });
+}
+
+let toks = [];
 export function updateAuthors(selection) {
-  tokenized = [];
-  for (let i = 0; i < corpus.length; i++) {
-    if (selection.includes(corpus[i].author)) {
-      corpus[i].text = corpus[i].text
-        .toLowerCase()
-        .replace(/(\r\n|\n|\r)/gm, ' ');
-      var arr = corpus[i].text
-        .replace(/[^\w\s]|_/g, function ($1) {
-          return ' ' + $1 + ' ';
-        })
-        .replace(/[ ]+/g, ' ')
-        .split(' ');
-      tokenized.push({author:corpus[i].author,text:arr});
+  toks = [];
+  for (let i = 0; i < tokenized.length; i++) {
+    if (selection.includes(tokenized[i].author)) {
+      toks.push(tokenized[i]);
     }
   }
 }
@@ -43,18 +46,18 @@ export function updateData(searchWord) {
   let parent = head;
 
   const len = 35;
-  for (let i = 0; i < tokenized.length; i++) {
-    for (let j = 0; j < tokenized[i].text.length; j++) {
-      if (tokenized[i].text[j] != searchWord) {
+  for (let i = 0; i < toks.length; i++) {
+    for (let j = 0; j < toks[i].text.length; j++) {
+      if (toks[i].text[j] != searchWord) {
         continue;
       } else {
         for (let k = 1; k < len; k++) {
-          let prf = tokenized[i].text.slice(j, j + k);
+          let prf = toks[i].text.slice(j, j + k);
           let s = prf.join(' ');
           if (prefix.has(s)) {
             parent = prefix.get(s);
           } else {
-            let node = createNode(tokenized[i].text[j + k - 1], tokenized[i].author);
+            let node = createNode(toks[i].text[j + k - 1], toks[i].author);
             prefix.set(s, node);
             parent.children.push(node);
             parent = node;
@@ -221,7 +224,7 @@ function update(source) {
     .attr('fill', d => {
       if (d.children) return 'black';
       const fill = authorColors[d.data.author];
-      console.log(fill)
+      console.log(fill);
       // console.log(d.data.author, fill)
       return fill;
     })
